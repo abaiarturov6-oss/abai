@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="ky">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Информатика — Компьютердин түзүлүшү</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0c1527;
+      --panel: #192743;
+      --text: #f7f9ff;
+      --muted: #c1cfe4;
+      --teal: #55dbc4;
+      --blue: #5d9cff;
+      --orange: #ffb454;
+      --purple: #b489ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(ellipse at 50% 0, #1b3150 0, var(--bg) 60%);
+      color: var(--text);
+      font-family: Arial, "Segoe UI", sans-serif;
+    }
+
+    .deck {
+      width: min(100vw, 1280px);
+      padding: 24px;
+    }
+
+    .stage {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 1px solid #29405f;
+      border-radius: 22px;
+      background: var(--bg);
+      box-shadow: 0 28px 90px #0008;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: clamp(28px, 6vw, 74px);
+      background:
+        radial-gradient(circle at 92% 8%, #183d50 0, transparent 24%),
+        linear-gradient(135deg, #0c1527, #101e35);
+    }
+
+    .slide.active { display: block; }
+
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--teal);
+      font-size: clamp(11px, 1.2vw, 15px);
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      max-width: 760px;
+      margin-bottom: 22px;
+      font-size: clamp(38px, 6vw, 76px);
+      line-height: 1.04;
+      letter-spacing: -.04em;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: clamp(27px, 3.8vw, 46px);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+    }
+
+    .subtitle {
+      max-width: 650px;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 23px);
+      line-height: 1.5;
+    }
+
+    .cover-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .orb {
+      position: absolute;
+      top: 12%;
+      right: 10%;
+      width: min(25vw, 260px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1c4a5b, #55dbc455);
+      filter: blur(1px);
+      animation: float 5s ease-in-out infinite alternate;
+    }
+
+    .orb::after {
+      position: absolute;
+      right: -4%;
+      bottom: -45%;
+      width: 38%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), #5d9cff);
+      content: "";
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(12px, 2vw, 22px);
+      margin-top: clamp(28px, 5vh, 52px);
+    }
+
+    .card {
+      min-height: clamp(170px, 27vh, 245px);
+      padding: clamp(18px, 2.5vw, 28px);
+      border: 1px solid #2b4261;
+      border-top: 4px solid var(--accent, var(--teal));
+      border-radius: 16px;
+      background: linear-gradient(145deg, #1a2b47, var(--panel));
+    }
+
+    .number {
+      display: inline-grid;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 16px;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent, var(--teal)) 18%, transparent);
+      color: var(--accent, var(--teal));
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: clamp(17px, 2vw, 23px);
+      line-height: 1.2;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(14px, 1.55vw, 17px);
+      line-height: 1.5;
+    }
+
+    .flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(10px, 2vw, 24px);
+      margin: 10vh 0 5vh;
+      color: var(--teal);
+      font-size: clamp(17px, 2.8vw, 32px);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .flow span {
+      padding: clamp(14px, 2vw, 23px);
+      border: 1px solid #2b826f;
+      border-radius: 14px;
+      background: #102d35;
+    }
+
+    .flow b { color: var(--orange); }
+
+    .end-note {
+      max-width: 720px;
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 23px);
+      line-height: 1.6;
+    }
+
+    .score {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      padding: 12px 18px;
+      border: 1px solid #2b826f;
+      border-radius: 14px;
+      background: #102d35;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 21px);
+    }
+
+    .score input {
+      width: 3.2em;
+      padding: 4px 2px;
+      border: 1px solid #2b826f;
+      border-radius: 8px;
+      background: #0c1527;
+      color: var(--teal);
+      font-size: 1.35em;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .score input:focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 2px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 4px 0;
+    }
+
+    button {
+      min-width: 44px;
+      min-height: 42px;
+      padding: 8px 14px;
+      border: 1px solid #355070;
+      border-radius: 10px;
+      background: #14233a;
+      color: var(--text);
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled) { border-color: var(--teal); }
+    button:disabled { opacity: .4; cursor: default; }
+
+    .progress-track {
+      height: 5px;
+      flex: 1;
+      overflow: hidden;
+      border-radius: 5px;
+      background: #243651;
+    }
+
+    .progress {
+      width: 16.6667%;
+      height: 100%;
+      background: var(--teal);
+      transition: width .35s ease;
+    }
+
+    .counter {
+      min-width: 48px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .hint {
+      margin: 12px 0 0;
+      color: #92a6c1;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .reveal {
+      opacity: 0;
+      animation: rise .65s ease forwards;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      from { transform: translateY(-7px) rotate(-4deg); }
+      to { transform: translateY(14px) rotate(5deg); }
+    }
+
+    @media (max-width: 700px) {
+      .deck { padding: 10px; }
+      .stage { aspect-ratio: auto; min-height: 590px; }
+      .slide { padding: 28px 22px; }
+      .cards { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
+      .card { min-height: auto; padding: 15px 18px; }
+      .number { float: right; margin: 0; }
+      .flow { flex-direction: column; margin: 38px 0 24px; }
+      .flow b { transform: rotate(90deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="Информатика боюнча презентация">
+    <div class="stage" id="stage">
+      <section class="slide active" aria-label="1-слайд">
+        <div class="orb" aria-hidden="true"></div>
+        <div class="cover-content">
+          <p class="eyebrow reveal" style="--delay: .05s">Информатика • кыргызча</p>
+          <h1 class="reveal" style="--delay: .2s">Компьютердин<br>түзүлүшү</h1>
+          <p class="subtitle reveal" style="--delay: .35s">Негизги бөлүктөр жана алардын милдеттери</p>
+          <p class="eyebrow reveal" style="--delay: .55s">Слайдды басыңыз же → баскычын колдонуңуз</p>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="2-слайд">
+        <p class="eyebrow reveal">01 • түшүнүк</p>
+        <h2 class="reveal" style="--delay: .1s">Компьютер деген эмне?</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--teal); --delay: .2s">
+            <span class="number">01</span><h3>Маалыматты кабыл алат</h3>
+            <p>Клавиатура, чычкан жана башка түзмөктөр маалыматты компьютерге киргизет.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--blue); --delay: .35s">
+            <span class="number">02</span><h3>Маалыматты иштетет</h3>
+            <p>Процессор буйруктарды аткарып, маалыматтар менен эсептөөлөрдү жүргүзөт.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--orange); --delay: .5s">
+            <span class="number">03</span><h3>Жыйынтыкты көрсөтөт</h3>
+            <p>Экран, динамик же принтер даяр болгон маалыматты чыгарат.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="3-слайд">
+        <p class="eyebrow reveal">02 • түзмөктөр</p>
+        <h2 class="reveal" style="--delay: .1s">Компьютердин негизги бөлүктөрү</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--purple); --delay: .2s">
+            <span class="number">01</span><h3>Системалык блок</h3>
+            <p>Ичинде процессор, эс тутум жана маалымат сактагыч жайгашат.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--teal); --delay: .35s">
+            <span class="number">02</span><h3>Монитор</h3>
+            <p>Текстти, сүрөттөрдү жана видеону экранга чыгарып көрсөтөт.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--blue); --delay: .5s">
+            <span class="number">03</span><h3>Клавиатура жана чычкан</h3>
+            <p>Компьютерге маалымат киргизүүгө жана аны башкарууга жардам берет.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="4-слайд">
+        <p class="eyebrow reveal">03 • ички түзүлүш</p>
+        <h2 class="reveal" style="--delay: .1s">Системалык блоктун ичинде</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--orange); --delay: .2s">
+            <span class="number">01</span><h3>Процессор</h3>
+            <p>Компьютердин «мээси». Буйруктарды аткарып, эсептөөлөрдү жүргүзөт.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--blue); --delay: .35s">
+            <span class="number">02</span><h3>Ыкчам эс тутум (RAM)</h3>
+            <p>Иштеп жаткан программалардын маалыматтарын убактылуу сактайт.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--teal); --delay: .5s">
+            <span class="number">03</span><h3>SSD же катуу диск</h3>
+            <p>Файлдарды жана программаларды электр өчкөндө да сактап калат.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="5-слайд">
+        <p class="eyebrow reveal">04 • коопсуздук</p>
+        <h2 class="reveal" style="--delay: .1s">Компьютерди туура колдонолу</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--teal); --delay: .2s">
+            <span class="number">01</span><h3>Көздү эс алдырыңыз</h3>
+            <p>Ар бир 20 мүнөт сайын алысты карап, көзгө кыска тыныгуу бериңиз.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--purple); --delay: .35s">
+            <span class="number">02</span><h3>Түз отуруңуз</h3>
+            <p>Экранды көздүн деңгээлине коюп, аркаңызды түз кармаңыз.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--orange); --delay: .5s">
+            <span class="number">03</span><h3>Коопсуз болуңуз</h3>
+            <p>Белгисиз шилтемелерди ачпаңыз жана сырсөзүңүздү бөлүшпөңүз.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="6-слайд">
+        <p class="eyebrow reveal">05 • программалар</p>
+        <h2 class="reveal" style="--delay: .1s">Операциялык система</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--purple); --delay: .2s">
+            <span class="number">01</span><h3>Башкарат</h3>
+            <p>Операциялык система компьютердин түзмөктөрүнүн ишин уюштурат.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--blue); --delay: .35s">
+            <span class="number">02</span><h3>Программаларды иштетет</h3>
+            <p>Колдонмолорду ачууга жана алар менен иштөөгө мүмкүнчүлүк берет.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--teal); --delay: .5s">
+            <span class="number">03</span><h3>Мисалдар</h3>
+            <p>Windows, macOS, Linux, Android жана iOS — операциялык системалар.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="7-слайд">
+        <p class="eyebrow reveal">06 • маалымат</p>
+        <h2 class="reveal" style="--delay: .1s">Файлдар жана папкалар</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--orange); --delay: .2s">
+            <span class="number">01</span><h3>Файл</h3>
+            <p>Текст, сүрөт, видео же башка маалымат сакталган документ.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--purple); --delay: .35s">
+            <span class="number">02</span><h3>Папка</h3>
+            <p>Файлдарды темасына же түрүнө жараша чогуу сактайт.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--blue); --delay: .5s">
+            <span class="number">03</span><h3>Тартип сакта</h3>
+            <p>Файлдарга түшүнүктүү ат коюп, керектүү папкага жайгаштыр.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="8-слайд">
+        <p class="eyebrow reveal">07 • интернет</p>
+        <h2 class="reveal" style="--delay: .1s">Интернетте коопсуз бол</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--teal); --delay: .2s">
+            <span class="number">01</span><h3>Сырсөздү сакта</h3>
+            <p>Күчтүү сырсөз тандап, аны башка адамдарга айтпа.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--orange); --delay: .35s">
+            <span class="number">02</span><h3>Шилтемени текшер</h3>
+            <p>Белгисиз сайттарга кирбе жана шектүү файлдарды жүктөбө.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--purple); --delay: .5s">
+            <span class="number">03</span><h3>Жеке маалымат</h3>
+            <p>Дарегиңди, телефонуңду жана сырсөзүңдү интернетке жарыялаба.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="9-слайд">
+        <p class="eyebrow reveal">08 • алгоритм</p>
+        <h2 class="reveal" style="--delay: .1s">Алгоритм деген эмне?</h2>
+        <div class="cards">
+          <article class="card reveal" style="--accent: var(--blue); --delay: .2s">
+            <span class="number">01</span><h3>Кадамдар тизмеги</h3>
+            <p>Алгоритм — максатка жеткирген так жана иреттүү буйруктар.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--orange); --delay: .35s">
+            <span class="number">02</span><h3>Күнүмдүк мисал</h3>
+            <p>Чай демдөө да кадамдары бар алгоритм болуп эсептелет.</p>
+          </article>
+          <article class="card reveal" style="--accent: var(--teal); --delay: .5s">
+            <span class="number">03</span><h3>Компьютер аткарат</h3>
+            <p>Программада алгоритм компьютер түшүнө турган буйруктар менен жазылат.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" aria-label="10-слайд">
+        <p class="eyebrow reveal">09 • жыйынтык</p>
+        <h2 class="reveal" style="--delay: .1s">Эсиңде болсун!</h2>
+        <div class="flow reveal" style="--delay: .25s">
+          <span>Киргизүү</span><b>→</b><span>Иштетүү</span><b>→</b><span>Чыгаруу</span>
+        </div>
+        <p class="end-note reveal" style="--delay: .4s">
+          Компьютер ар түрдүү түзмөктөрдүн биргелешкен иши аркылуу маалымат менен иштейт.
+        </p>
+        <div class="score reveal" style="--delay: .55s">
+          <span role="img" aria-label="Улыбающийся смайлик">😊</span>
+          <label for="scoreValue">Баалоо:</label>
+          <input id="scoreValue" type="number" min="0" max="10" step="1" value="0" inputmode="numeric" aria-label="Балл, от 0 до 10">
+          <span>/10</span>
+        </div>
+      </section>
+
+    </div>
+
+    <nav class="controls" aria-label="Слайд башкаруу">
+      <button id="previous" type="button" aria-label="Мурунку слайд">←</button>
+      <div class="progress-track" aria-hidden="true"><div class="progress" id="progress"></div></div>
+      <span class="counter" id="counter" aria-live="polite">1 / 10</span>
+      <button id="next" type="button" aria-label="Кийинки слайд">→</button>
+    </nav>
+    <p class="hint">Башкаруу: ← / → баскычтары же экрандагы жебелер</p>
+  </main>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const previous = document.querySelector("#previous");
+    const next = document.querySelector("#next");
+    const counter = document.querySelector("#counter");
+    const progress = document.querySelector("#progress");
+    const stage = document.querySelector("#stage");
+    const scoreInput = document.querySelector("#scoreValue");
+    let current = 0;
+    let validScore = scoreInput.value;
+    scoreInput.addEventListener("change", () => {
+      if (!scoreInput.validity.valid) {
+        scoreInput.value = validScore;
+        scoreInput.reportValidity();
+        return;
+      }
+      validScore = scoreInput.value;
+    });
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === current);
+        slide.setAttribute("aria-hidden", String(i !== current));
+      });
+      previous.disabled = current === 0;
+      next.disabled = current === slides.length - 1;
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+    }
+
+    previous.addEventListener("click", () => showSlide(current - 1));
+    next.addEventListener("click", () => showSlide(current + 1));
+    document.addEventListener("keydown", event => {
+      if (event.key === "ArrowRight" || event.key === " ") {
+        event.preventDefault();
+        showSlide(current + 1);
+      } else if (event.key === "ArrowLeft") {
+        showSlide(current - 1);
+      } else if (event.key === "Home") {
+        showSlide(0);
+      } else if (event.key === "End") {
+        showSlide(slides.length - 1);
+      }
+    });
+    stage.addEventListener("click", event => {
+      if (event.target === stage) showSlide(current + 1);
+    });
+
+    showSlide(0);
+  </script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЧМ-2026 Календарь</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .stage {
+            margin-bottom: 50px;
+        }
+        
+        .stage-title {
+            font-size: 2em;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .match {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .match:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+        
+        .match-date {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .teams {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+        
+        .team {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1e3c72;
+            flex: 1;
+        }
+        
+        .vs {
+            color: #999;
+            margin: 0 15px;
+            font-size: 0.9em;
+        }
+        
+        .stadium {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .group-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .status.scheduled {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status.live {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .legend {
+            background: #f5f5f5;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        
+        .legend h3 {
+            margin-bottom: 15px;
+            color: #1e3c72;
+        }
+        
+        .legend-item {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .legend-box {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            margin-right: 8px;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+        
+        .footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚽ ЧМ-2026</h1>
+            <p>ФИФА Чемпионат мира по футболу</p>
+            <p style="font-size: 1em; margin-top: 10px;">11 июня - 19 июля 2026</p>
+        </div>
+        
+        <div class="content">
+            <div class="legend">
+                <h3>📋 Легенда</h3>
+                <div class="legend-item">
+                    <span class="legend-box" style="background: #667eea;"></span>
+                    Групповой этап
+                </div>
+                <div class="legend-item">
+                    <span class="legend-box" style="background: #43a047;"></span>
+                    Плей-офф
+                </div>
+                <div class="legend-item">
+                    <span class="legend-box" style="background: #ff9800;"></span>
+                    Решающие матчи
+                </div>
+            </div>
+            
+            <!-- Групповой этап -->
+            <div class="stage">
+                <h2 class="stage-title">🏁 Групповой этап</h2>
+                
+                <div class="matches-grid">
+                    <!-- Группа A -->
+                    <div class="match">
+                        <span class="group-badge">Группа A</span>
+                        <div class="match-date">📅 11 июня 2026 | 20:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇺🇸 США</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇲🇽 Мексика</span>
+                        </div>
+                        <div class="stadium">🏟️ SoFi Stadium, Inglewood</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <div class="match">
+                        <span class="group-badge">Группа A</span>
+                        <div class="match-date">📅 12 июня 2026 | 19:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇨🇦 Канада</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇲🇦 Марокко</span>
+                        </div>
+                        <div class="stadium">🏟️ BC Place, Vancouver</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <!-- Группа B -->
+                    <div class="match">
+                        <span class="group-badge">Группа B</span>
+                        <div class="match-date">📅 12 июня 2026 | 22:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇦🇷 Аргентина</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇵🇪 Перу</span>
+                        </div>
+                        <div class="stadium">🏟️ AT&T Stadium, Arlington</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <div class="match">
+                        <span class="group-badge">Группа B</span>
+                        <div class="match-date">📅 13 июня 2026 | 01:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇧🇷 Бразилия</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇨🇴 Колумбия</span>
+                        </div>
+                        <div class="stadium">🏟️ MetLife Stadium, East Rutherford</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <!-- Группа C -->
+                    <div class="match">
+                        <span class="group-badge">Группа C</span>
+                        <div class="match-date">📅 13 июня 2026 | 17:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇫🇷 Франция</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇳🇱 Нидерланды</span>
+                        </div>
+                        <div class="stadium">🏟️ Mercedes-Benz Stadium, Atlanta</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <div class="match">
+                        <span class="group-badge">Группа C</span>
+                        <div class="match-date">📅 14 июня 2026 | 20:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇪🇸 Испания</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇩🇪 Германия</span>
+                        </div>
+                        <div class="stadium">🏟️ MetLife Stadium, East Rutherford</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <!-- Группа D -->
+                    <div class="match">
+                        <span class="group-badge">Группа D</span>
+                        <div class="match-date">📅 15 июня 2026 | 19:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇬🇧 Англия</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇮🇷 Иран</span>
+                        </div>
+                        <div class="stadium">🏟️ SoFi Stadium, Inglewood</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <div class="match">
+                        <span class="group-badge">Группа D</span>
+                        <div class="match-date">📅 15 июня 2026 | 22:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🇵🇱 Польша</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🇲🇽 Мексика</span>
+                        </div>
+                        <div class="stadium">🏟️ NRG Stadium, Houston</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Плей-офф -->
+            <div class="stage">
+                <h2 class="stage-title">🎯 Плей-офф</h2>
+                
+                <div class="matches-grid">
+                    <div class="match">
+                        <span class="group-badge" style="background: #43a047;">Половина финала</span>
+                        <div class="match-date">📅 3 июля 2026 | 22:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🏆 Победитель Gr. A</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🏆 Вторая Gr. B</span>
+                        </div>
+                        <div class="stadium">🏟️ Levi's Stadium, Santa Clara</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <div class="match">
+                        <span class="group-badge" style="background: #43a047;">Половина финала</span>
+                        <div class="match-date">📅 4 июля 2026 | 22:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🏆 Победитель Gr. C</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🏆 Вторая Gr. D</span>
+                        </div>
+                        <div class="stadium">🏟️ Arrowhead Stadium, Kansas City</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Финал -->
+            <div class="stage">
+                <h2 class="stage-title">👑 Финал</h2>
+                
+                <div class="matches-grid" style="max-width: 500px;">
+                    <div class="match">
+                        <span class="group-badge" style="background: #ff9800;">Матч за 3-е место</span>
+                        <div class="match-date">📅 17 июля 2026 | 22:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🥉 Третий</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🥉 Четвёртый</span>
+                        </div>
+                        <div class="stadium">🏟️ MetLife Stadium, New Jersey</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                    
+                    <div class="match">
+                        <span class="group-badge" style="background: #ff9800;">ФИНАЛ ЧМ</span>
+                        <div class="match-date">📅 19 июля 2026 | 19:00 UTC</div>
+                        <div class="teams">
+                            <span class="team">🥇 Финалист 1</span>
+                            <span class="vs">vs</span>
+                            <span class="team">🥇 Финалист 2</span>
+                        </div>
+                        <div class="stadium">🏟️ MetLife Stadium, New Jersey</div>
+                        <span class="status scheduled">Запланирован</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🌍 ЧМ-2026 | США • Канада • Мексика</p>
+            <p style="font-size: 0.9em; margin-top: 8px;">Календарь создан для справки</p>
+        </div>
+    </div>
+</body>
+</html>
